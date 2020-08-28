@@ -9,6 +9,7 @@ URL: https://github.com/yokoyamark/FadingEdgeScrollView
 
 ## Usage
 1. Specify as Custom class from Storyboard or Xib.  
+  https://github.com/yokoyamark/SampleFadingEdgeScrollView  
 2. Use from Code.  
 
 ## Developed By
