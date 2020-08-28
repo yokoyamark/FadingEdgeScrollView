@@ -1,23 +1,33 @@
-import UIKit
 //
 //  FadingEdgeScrollView.swift
 //
 //  Created by yokoyamark on 2020/08/27
 //  Copyright © 2020 yokoyamark. All rights reserved.
 //
+#if canImport(UIKit)
+import UIKit
+#endif
 
-@IBDesignable
 /// UIScrollView with edge fading
-open class FadingEdgeScrollView: UIScrollView {
+@IBDesignable open class FadingEdgeScrollView: UIScrollView {
+    
+    /// Flag to fade the top edge
     @IBInspectable public var isFadeTop: Bool = true
-    
+    /// Flag to fade the bottom edge
     @IBInspectable public var isFadeBottom: Bool = true
+    /// Length to fade edge
+    @IBInspectable public var fadeEdgeLength: CGFloat {
+        get {
+            return self.fadeLength
+        }
+        set {
+            self.fadeLength = newValue
+        }
+    }
     
-    @IBInspectable public var fadingEdgeSize: CGFloat = 50.0
-    
-    private fadeTop: Bool = true
-    private fadeBottom: Bool = true
-    private fadeSize: CGFloat = 50.0
+    private var fadeTop: Bool = true
+    private var fadeBottom: Bool = true
+    private var fadeLength: CGFloat = 50.0
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -30,25 +40,29 @@ open class FadingEdgeScrollView: UIScrollView {
     }
     
     private func setup() {
-        self.fadeSize = self.fadingEdgeSize
+        self.delegate = self
         self.fadeTop = self.isFadeTop
         self.fadeBottom = self.isFadeBottom
         self.check()
-        self.delegate = self
     }
 
     private func check() {
-        // scroll量が0のとき
-        if !self.isFadeTop || self.contentOffset.y == 0 {
-            self.fadeTop = false
-        } else {
-            self.fadeTop = true
+        if self.isFadeTop {
+            // scroll量が0のとき
+            if self.contentOffset.y == 0 {
+                self.fadeTop = false
+            } else {
+                self.fadeTop = true
+            }
         }
-        // scroll量 + 画面高さ >= scrollコンテンツ高さ
-        if !self.isFadeBottom || (self.contentOffset.y + self.bounds.height) >= self.contentSize.height {
-            self.fadeBottom = false
-        } else {
-            self.fadeBottom = true
+        
+        if self.isFadeBottom {
+            // scroll量 + 画面高さ >= scrollコンテンツ高さ
+            if (self.contentOffset.y + self.bounds.height) >= self.contentSize.height {
+                self.fadeBottom = false
+            } else {
+                self.fadeBottom = true
+            }
         }
     }
 
@@ -67,10 +81,10 @@ open class FadingEdgeScrollView: UIScrollView {
             solidRect.origin.x = self.contentOffset.x
             solidRect.size = self.bounds.size
             if self.fadeTop {
-                solidRect.origin.y = fadeSize
+                solidRect.origin.y = fadeLength
             }
             if self.fadeBottom {
-                solidRect.size.height = solidRect.size.height - (solidRect.origin.y + fadeSize)
+                solidRect.size.height = solidRect.size.height - (solidRect.origin.y + fadeLength)
             }
             
             solidLayer.frame = solidRect
@@ -78,7 +92,7 @@ open class FadingEdgeScrollView: UIScrollView {
             
             if self.fadeTop {
                 let topLayer = CAGradientLayer()
-                topLayer.frame = CGRect(x: self.contentOffset.x, y: 0, width: self.bounds.width, height: fadeSize)
+                topLayer.frame = CGRect(x: self.contentOffset.x, y: 0, width: self.bounds.width, height: fadeLength)
                 topLayer.colors = [UIColor.clear.cgColor, UIColor.black.cgColor]
                 topLayer.startPoint = CGPoint.zero
                 topLayer.endPoint = CGPoint(x: 0, y: 1)
@@ -87,7 +101,7 @@ open class FadingEdgeScrollView: UIScrollView {
             
             if self.fadeBottom {
                 let bottomLayer = CAGradientLayer()
-                bottomLayer.frame = CGRect(x: self.contentOffset.x, y: self.bounds.height - fadeSize, width: self.bounds.width, height: fadeSize)
+                bottomLayer.frame = CGRect(x: self.contentOffset.x, y: self.bounds.height - fadeLength, width: self.bounds.width, height: fadeLength)
                 bottomLayer.colors = [UIColor.black.cgColor, UIColor.clear.cgColor]
                 bottomLayer.startPoint = CGPoint.zero
                 bottomLayer.endPoint = CGPoint(x: 0, y: 1)
@@ -104,8 +118,6 @@ open class FadingEdgeScrollView: UIScrollView {
 extension FadingEdgeScrollView: UIScrollViewDelegate {
     public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerated: Bool) {
         self.setNeedsLayout()
-        self.layoutIfNeeded()
     }
-    
 }
 
