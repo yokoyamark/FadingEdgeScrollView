@@ -18,5 +18,5 @@ Ryosuke Yokoyama (yokoyamark)
 ## Copyright
 see ./LICENSE
 
-FadingEdgeScrollView is released under the [Apache License 2.0](https://github.com/yokoyamark/FadingEdgeScrollView/blob/master/LICENSE).  
-Copyright 2020 yokoyamark  
+FadingEdgeScrollView is released under the [MIT License](https://github.com/yokoyamark/FadingEdgeScrollView/blob/master/LICENSE).  
+Copyright 2021 yokoyamark  
